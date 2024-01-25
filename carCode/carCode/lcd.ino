@@ -26,7 +26,7 @@ void lcddisp() {
 void printDist() {
   // Get the LIDAR distance measurement
   lcd.setCursor(0, 1);
-  int distance = myLidarLite.distance();  // Get the distance in cm
+  int distance = getDistance();  // Get the distance in cm
   lcd.print("Distance: ");
   lcd.print(distance);
   lcd.print(" cm");

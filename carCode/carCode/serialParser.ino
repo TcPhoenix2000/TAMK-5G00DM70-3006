@@ -28,14 +28,15 @@ void parseSerialData() {
     Serial.print("Received Move value: ");
     Serial.println(moveValue);
     if (moveValue > 0) {
-      Serial.println("move backwards");
-      for (int m = 0; m < moveValue; m++) {
-        go_backwards();
-      }
-    } else if (moveValue < 0) {
       Serial.println("move forward");
-      for (int m = 0; m > moveValue; m--) {
+      for (int m = 0; m < moveValue; m++) {
         go_forward();
+      }
+
+    } else if (moveValue < 0) {
+      Serial.println("move backwards");
+      for (int m = 0; m > moveValue; m--) {
+        go_backwards();
       }
     }
   }
@@ -47,64 +48,34 @@ void parseSerialData() {
     Serial.print("Received Turn value: ");
     Serial.println(turnValue);
 
-    float byteAngle = Compass();
-    byteAngle -= 180;
-    int wantedAngle = turnValue + byteAngle;
+    int wantedAngle = turnValue + getByteAngle();
 
-    float targetAngle = turnValue + byteAngle;
-    float tolerance = 0.01;  // Adjust the tolerance as neede
+    float targetAngle = turnValue + getByteAngle();
+    float tolerance = 5.0;  // Adjust the tolerance as neede
 
-    while (abs(wantedAngle - targetAngle) > tolerance) {
-      Serial.print("w");
-      Serial.println(wantedAngle);
-      Serial.print("t");
-      Serial.println(targetAngle);
-      Serial.print("b");
-      Serial.println(byteAngle);
-      if (byteAngle > targetAngle){
-        Serial.println("turn - right");
-      }
-      if (byteAngle < targetAngle){
-        Serial.println("turn - left");
-      }
-      if (byteAngle == targetAngle){
-        Serial.println("done");
-      }
+    Serial.print("w");
+    Serial.println(wantedAngle);
+    Serial.print("t");
+    Serial.println(targetAngle);
+    Serial.print("b");
+    Serial.println(getByteAngle());
+
+    if (getByteAngle() != targetAngle) {
+      TurnCheck(targetAngle, wantedAngle, tolerance);
+      Serial.println("done");
+    }
+  }
+}
+void TurnCheck(int targetAngle, int wantedAngle, int tolerance) {
+  while (abs(getByteAngle() - wantedAngle) > tolerance) {
+    while (getByteAngle() < wantedAngle) {
+      delay(10);
+      turn_right();
+    }
+    while (getByteAngle() > wantedAngle) {
+      delay(10);
+      turn_left();
       
-      /*
-      * keep testing this !!!
-      */
-      break;
-      //stay_put();
     }
-
-    // while (wantedAngle > 180) {
-    //   //turn_right();
-    // }
-    //
-    // while (wantedAngle < 180) {
-    //   //turn_left();
-    // }
-
-
-  // this works  not dergee angled
-  // Turn right loop
-    /*if (turnValue > 0) {
-      for (int t = 0; t > -turnValue; t--) {
-        turn_right();
-      }
-    }
-    else if(turnValue < 0) {
-        // Turn left loop
-        for (int t = 0; t < turnValue ; t++) {
-          turn_left();
-        }
-      }
-    else if(turnValue < 0) {
-        // Stay put
-        stay_put();
-      }
-    }
-  */
   }
 }

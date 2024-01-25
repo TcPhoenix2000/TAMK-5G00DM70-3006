@@ -2,8 +2,8 @@
 #include <LiquidCrystal.h>
 #include <LIDARLite.h>
 
-#define Motor_forward 0
-#define Motor_return 1
+#define Motor_forward 1
+#define Motor_return 0
 #define Motor_L_dir_pin 7
 #define Motor_R_dir_pin 8
 #define Motor_L_pwm_pin 9
@@ -41,7 +41,7 @@ void setup() {
   myLidarLite.configure(0);    // Change this number to try out alternate configurations
   Wire.begin();
   lcd.begin(20, 4);
-  initialDistance = myLidarLite.distance();  //LIDAR
+  initialDistance = getDistance();  //LIDAR
   Serial.println("initialized");
 
   attachInterrupt(digitalPinToInterrupt(Joystick_SW_pin), CheckButton, FALLING);
