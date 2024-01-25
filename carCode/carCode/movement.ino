@@ -1,6 +1,6 @@
 int GetSpeed(){
-  pwm_R = 75;
-  pwm_L = 75;
+  pwm_R = 100;
+  pwm_L = 100;
   return pwm_L,pwm_R;
 }
 void turn_right() {

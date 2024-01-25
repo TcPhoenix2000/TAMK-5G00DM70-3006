@@ -27,15 +27,17 @@ void parseSerialData() {
     // Now you can use the moveValue as needed in your program
     Serial.print("Received Move value: ");
     Serial.println(moveValue);
+    int initDist = getDistance();
+    initDist -= moveValue;
     if (moveValue > 0) {
       Serial.println("move forward");
-      for (int m = 0; m < moveValue; m++) {
+      while (initDist < getDistance()) {
         go_forward();
       }
 
     } else if (moveValue < 0) {
       Serial.println("move backwards");
-      for (int m = 0; m > moveValue; m--) {
+      while (initDist > getDistance()) {
         go_backwards();
       }
     }
@@ -75,7 +77,6 @@ void TurnCheck(int targetAngle, int wantedAngle, int tolerance) {
     while (getByteAngle() > wantedAngle) {
       delay(10);
       turn_left();
-      
     }
   }
 }
