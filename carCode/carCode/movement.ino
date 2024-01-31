@@ -1,6 +1,9 @@
+int SetSpeed(int Speed){
+  pwm_L = Speed;
+  pwm_R = Speed;
+}
+
 int GetSpeed(){
-  pwm_R = 100;
-  pwm_L = 100;
   return pwm_L,pwm_R;
 }
 void turn_right() {
@@ -59,8 +62,8 @@ void stay_put() {
   digitalWrite(Motor_R_dir_pin, Motor_return);
   digitalWrite(Motor_L_dir_pin, Motor_return);
 
-  pwm_R = 0;
-  pwm_L = 0;
+  int pwm_R = 0;
+  int pwm_L = 0;
 
   analogWrite(Motor_L_pwm_pin, pwm_L);
   analogWrite(Motor_R_pwm_pin, pwm_R);

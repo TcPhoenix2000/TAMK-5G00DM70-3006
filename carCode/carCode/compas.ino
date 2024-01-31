@@ -9,8 +9,7 @@ float Compass() {
   return byteAngle;
 }
 
+/*value between 0 and 360*/
 float getByteAngle(){
-  float byteAngle = Compass();
-  byteAngle -= 180;
-  return byteAngle;
+  return Compass();
 }

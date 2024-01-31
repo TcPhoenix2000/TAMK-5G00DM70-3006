@@ -28,6 +28,7 @@ void parseSerialData() {
     Serial.print("Received Move value: ");
     Serial.println(moveValue);
     int initDist = getDistance();
+    SetSpeed(100);
     initDist -= moveValue;
     if (moveValue > 0) {
       Serial.println("move forward");
@@ -50,33 +51,35 @@ void parseSerialData() {
     Serial.print("Received Turn value: ");
     Serial.println(turnValue);
 
-    int wantedAngle = turnValue + getByteAngle();
 
-    float targetAngle = turnValue + getByteAngle();
-    float tolerance = 5.0;  // Adjust the tolerance as neede
+    int targetAngle = (int)(turnValue + getByteAngle()) % 361;
+    int tolerance = 5;  // Adjust the tolerance as neede
+    SetSpeed(60);
 
-    Serial.print("w");
-    Serial.println(wantedAngle);
-    Serial.print("t");
-    Serial.println(targetAngle);
-    Serial.print("b");
+    // debug
+    Serial.print("start");
     Serial.println(getByteAngle());
+    Serial.print("targe");
+    Serial.println(targetAngle);
+
 
     if (getByteAngle() != targetAngle) {
-      TurnCheck(targetAngle, wantedAngle, tolerance);
+      TurnCheck(targetAngle, getByteAngle(), tolerance);
       Serial.println("done");
     }
   }
 }
-void TurnCheck(int targetAngle, int wantedAngle, int tolerance) {
-  while (abs(getByteAngle() - wantedAngle) > tolerance) {
-    while (getByteAngle() < wantedAngle) {
-      delay(10);
-      turn_right();
-    }
-    while (getByteAngle() > wantedAngle) {
-      delay(10);
+
+void TurnCheck(int targetAngle, int startAngle, int tolerance) {
+  while (targetAngle < getByteAngle() - tolerance || targetAngle > getByteAngle() + tolerance) {
+    if (targetAngle - getByteAngle() < 0) {
       turn_left();
+      delay(10);
+    }
+    if (targetAngle - getByteAngle() > 0) {
+      turn_right();
+      delay(10);
     }
   }
+
 }
