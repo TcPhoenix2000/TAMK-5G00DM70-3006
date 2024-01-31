@@ -21,7 +21,7 @@ int cumulativeDistance = 0;  // Cumulative distance driven
 unsigned long lastDebounceTime = 0;
 
 // to cycle throuh programmes
-int program = 0;
+int program = 1;
 
 // lcd
 const int rs = 37, en = 36, d4 = 35, d5 = 34, d6 = 33, d7 = 32;
@@ -32,7 +32,7 @@ float pwm_L = 0;
 
 
 // uart serial2 for output esp dashboard
-bool remoteControl = true;
+bool remoteControl = false;
 String paramName = "";
 int moveValue = 0;
 float turnValue = 0;
@@ -52,36 +52,38 @@ void setup() {
 }
 
 void loop() {
+  switch (program) {
+    case 0:
+      // Code for program 0 local drive
+      remoteControl = false;
+      while (analogRead(A9) >= 490 && analogRead(A9) <= 550 && analogRead(A8) >= 460 && analogRead(A8) <= 518) stay_put();
+      while (analogRead(A9) < 490) SetSpeed(100), turn_left();
+      while (analogRead(A9) > 550) SetSpeed(100), turn_right();
+      while (analogRead(A8) > 518) SetSpeed(100), go_forward();
+      while (analogRead(A8) < 460) SetSpeed(100), go_backwards();
 
-  if (!remoteControl) {
-    while (analogRead(A9) >= 490 && analogRead(A9) <= 550 && analogRead(A8) >= 460 && analogRead(A8) <= 518) stay_put();
-    while (analogRead(A9) < 490) {
-      SetSpeed(100);
-      turn_left();
-    };
+      break;
+    case 1:
+      // Code for program 1 remote control
+      remoteControl = true;
+      stay_put();
+      parseSerialData();
+      break;
+    case 2:
+      // Code for program 2 somthing else
+      remoteControl = false;
 
-    while (analogRead(A9) > 550) {
-      SetSpeed(100);
-      turn_right();
-    };
-    while (analogRead(A8) > 518) {
-      SetSpeed(100);
-      go_forward();
-    };
-    while (analogRead(A8) < 460) {
-      SetSpeed(100);
-      go_backwards();
-    };
-
-  } else {
-    stay_put();
-    parseSerialData();
+      break;
+    default:
+      // Default case, executed when program is neither 0, 1, nor 2
+      program = 0;  // Reset program to 0
+      break;
   }
 
   /*
-  * pwm_L = (Ypot);
-  * pwm_R = (Xpot);
-  */
+    * pwm_L = (Ypot);
+    * pwm_R = (Xpot);
+    */
   pwm_R = 0;
   pwm_L = 0;
 }
@@ -92,27 +94,9 @@ void CheckButton() {
 
   // Check if we have passed the debounce delay since the last button change
   if ((millis() - lastDebounceTime) > BUTTON_DEBOUNCE_DELAY) {
-    program++;
     if (buttonState == LOW) {  // Assuming pull-up resistor
                                // Button has been pressed
-      switch (program) {
-        case 0:
-          // Code for program 0
-          remoteControl = !remoteControl;
-
-          break;
-        case 1:
-          // Code for program 1
-          break;
-        case 2:
-          // Code for program 2
-          break;
-        default:
-          // Default case, executed when program is neither 0, 1, nor 2
-          program = 0;  // Reset program to 0
-          break;
-      }
-
+      program++;                         
       if (!remoteControl) {
         Serial.println("remote control activated!");
       } else {

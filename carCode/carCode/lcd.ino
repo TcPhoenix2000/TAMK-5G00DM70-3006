@@ -14,10 +14,17 @@ void lcddisp() {
   if (byteAngle >= 211 && byteAngle <= 255) lcd.print("SW");
   if (byteAngle >= 256 && byteAngle <= 290) lcd.print("W");
   if (byteAngle >= 291 && byteAngle <= 344) lcd.print("NW");
-  if (remoteControl) {
-    printDist();
-  } else {
-    printJoystick();
+
+  switch (program) {
+    case 0:
+      printJoystick();
+      break;
+    case 1:
+      printDist();
+      break;
+    case 2:
+
+      break;
   }
 
   delay(50);

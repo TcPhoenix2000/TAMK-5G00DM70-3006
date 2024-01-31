@@ -69,3 +69,35 @@ void stay_put() {
   analogWrite(Motor_R_pwm_pin, pwm_R);
   lcddisp();
 }
+
+void TurnAngle( int turnValue,int tolerance) {
+  int targetAngle = (int)(turnValue + getByteAngle()) % 361;
+
+  while (targetAngle < getByteAngle() - tolerance || targetAngle > getByteAngle() + tolerance) {
+    if (targetAngle - getByteAngle() < 0) {
+      if (turnValue < 0){turn_left();}
+      if (turnValue > 0){turn_right();}
+      delay(10);
+    }
+    if (targetAngle - getByteAngle() > 0) {
+      if (turnValue > 0){turn_right();}
+      if (turnValue < 0){turn_left();}
+      delay(10);
+    }
+  }
+}
+
+void moveDist(int moveValue ,int initDist){
+  if (moveValue > 0) {
+      Serial.println("move forward");
+      while (initDist < getDistance()) {
+        go_forward();
+      }
+
+    } else if (moveValue < 0) {
+      Serial.println("move backwards");
+      while (initDist > getDistance()) {
+        go_backwards();
+      }
+    }
+}

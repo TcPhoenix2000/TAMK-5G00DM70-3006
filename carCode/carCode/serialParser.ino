@@ -30,18 +30,8 @@ void parseSerialData() {
     int initDist = getDistance();
     SetSpeed(100);
     initDist -= moveValue;
-    if (moveValue > 0) {
-      Serial.println("move forward");
-      while (initDist < getDistance()) {
-        go_forward();
-      }
-
-    } else if (moveValue < 0) {
-      Serial.println("move backwards");
-      while (initDist > getDistance()) {
-        go_backwards();
-      }
-    }
+    
+    moveDist(moveValue , initDist);
   }
   // Check if the received line contains "Turn:"
   if (line.startsWith("Turn:")) {
@@ -51,35 +41,11 @@ void parseSerialData() {
     Serial.print("Received Turn value: ");
     Serial.println(turnValue);
 
-
-    int targetAngle = (int)(turnValue + getByteAngle()) % 361;
     int tolerance = 5;  // Adjust the tolerance as neede
     SetSpeed(60);
 
-    // debug
-    Serial.print("start");
-    Serial.println(getByteAngle());
-    Serial.print("targe");
-    Serial.println(targetAngle);
-
-
-    if (getByteAngle() != targetAngle) {
-      TurnCheck(targetAngle, getByteAngle(), tolerance);
-      Serial.println("done");
-    }
+    TurnAngle(turnValue, tolerance);
+    Serial.println("done");
+    
   }
-}
-
-void TurnCheck(int targetAngle, int startAngle, int tolerance) {
-  while (targetAngle < getByteAngle() - tolerance || targetAngle > getByteAngle() + tolerance) {
-    if (targetAngle - getByteAngle() < 0) {
-      turn_left();
-      delay(10);
-    }
-    if (targetAngle - getByteAngle() > 0) {
-      turn_right();
-      delay(10);
-    }
-  }
-
 }

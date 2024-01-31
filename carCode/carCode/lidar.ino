@@ -6,15 +6,6 @@ void updateCumulativeDistance() {
   cumulativeDistance += distanceMoved;                    // Update the cumulative distance
   initialDistance = currentDistance;                      // Update initial distance for next movement
 
-  //Serial.print("cur:");
-  //Serial.println(currentDistance);
-  //Serial.print("dis:");
-  //Serial.println(distanceMoved);
-  //Serial.print("cum:");
-  //Serial.println(cumulativeDistance);
-  //Serial.print("ini:");
-  //Serial.println(initialDistance);
-
   lcddisp();  // Update the display
 }
 int getDistance() {
