@@ -21,7 +21,7 @@ int cumulativeDistance = 0;  // Cumulative distance driven
 unsigned long lastDebounceTime = 0;
 
 // to cycle throuh programmes
-int program = 1;
+int program = 0;
 
 // lcd
 const int rs = 37, en = 36, d4 = 35, d5 = 34, d6 = 33, d7 = 32;
@@ -54,26 +54,48 @@ void setup() {
 void loop() {
   switch (program) {
     case 0:
+      Serial.println("program 0");
       // Code for program 0 local drive
       remoteControl = false;
       while (analogRead(A9) >= 490 && analogRead(A9) <= 550 && analogRead(A8) >= 460 && analogRead(A8) <= 518) stay_put();
-      while (analogRead(A9) < 490) SetSpeed(100), turn_left();
-      while (analogRead(A9) > 550) SetSpeed(100), turn_right();
-      while (analogRead(A8) > 518) SetSpeed(100), go_forward();
-      while (analogRead(A8) < 460) SetSpeed(100), go_backwards();
+      while (analogRead(A9) < 490) SetSpeed(100), turn_right();
+      while (analogRead(A9) > 550) SetSpeed(100), turn_left();
+      while (analogRead(A8) > 518) SetSpeed(100), go_backwards();
+      while (analogRead(A8) < 460) SetSpeed(100), go_forward();
 
       break;
     case 1:
+    Serial.println("program 1");
       // Code for program 1 remote control
       remoteControl = true;
       stay_put();
       parseSerialData();
       break;
     case 2:
+    Serial.println("program 2");
       // Code for program 2 somthing else
-      remoteControl = false;
-
+      remoteControl = true;
+      stay_put();
+      parseSerialData();
       break;
+    case 3:
+    Serial.println("program 3");
+      // program 2 exe
+      executeMovementSequence(joystickPotentio());
+      break;
+    case 4:
+    Serial.println("program 4");
+      // follow program
+      maintainDistance(20);
+      break;
+    case 5:
+    Serial.println("program 5");
+      // program 2 exe
+      stay_put();
+      maintainDistance(joystickPotentio());
+      Serial.println(joystickPotentio());
+      break;
+
     default:
       // Default case, executed when program is neither 0, 1, nor 2
       program = 0;  // Reset program to 0
@@ -87,6 +109,16 @@ void loop() {
   pwm_R = 0;
   pwm_L = 0;
 }
+void executeMovementSequence(int number) {
+  Serial.println("start sequenz");
+  bool executing = true;
+  driveToDistance(number);
+  delay(100);
+  TurnAngle(90, 5);
+  delay(400);
+  driveToDistance(number);
+  program = 4;
+}
 
 void CheckButton() {
   // Read the button state
@@ -96,7 +128,7 @@ void CheckButton() {
   if ((millis() - lastDebounceTime) > BUTTON_DEBOUNCE_DELAY) {
     if (buttonState == LOW) {  // Assuming pull-up resistor
                                // Button has been pressed
-      program++;                         
+      program++;
       if (!remoteControl) {
         Serial.println("remote control activated!");
       } else {
@@ -106,4 +138,11 @@ void CheckButton() {
       lastDebounceTime = millis();
     }
   }
+}
+
+int joystickPotentio() {
+
+  int proportion = analogRead(A9);
+  int scaledValue = map(proportion, 0, 1024, 2, 20);
+  return scaledValue;
 }

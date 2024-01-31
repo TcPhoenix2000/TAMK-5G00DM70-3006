@@ -72,6 +72,7 @@ void stay_put() {
 
 void TurnAngle( int turnValue,int tolerance) {
   int targetAngle = (int)(turnValue + getByteAngle()) % 361;
+  SetSpeed(60);
 
   while (targetAngle < getByteAngle() - tolerance || targetAngle > getByteAngle() + tolerance) {
     if (targetAngle - getByteAngle() < 0) {
@@ -87,7 +88,38 @@ void TurnAngle( int turnValue,int tolerance) {
   }
 }
 
+void driveToDistance(int targetDistance) {
+  unsigned long startTime = millis();  // Record the start time
+  unsigned long twoSecondTimeout = 5000;  // Set the timeout period (2000 milliseconds = 2 seconds)
+
+  int initial = getDistance(); 
+  Serial.print("Initial distance: ");
+  Serial.println(initial);
+
+  int targetPosition = initial - targetDistance;  // Calculate the target position
+  Serial.print("Target position: ");
+  Serial.println(targetPosition);
+
+  // Drive until the target position is reached or until 2 seconds have passed
+  while (getDistance() > targetPosition) {
+    // Check if 2 seconds have passed
+    if (millis() - startTime >= twoSecondTimeout) {
+      Serial.println("2-second timeout reached, breaking loop");
+      break;
+    }
+
+    Serial.println("Driving...");
+    SetSpeed(100);
+    go_forward();
+  }
+
+  stay_put();  // Make sure to stop the motors after exiting the loop
+  Serial.println("Drive to distance complete or timeout reached.");
+}
+
+
 void moveDist(int moveValue ,int initDist){
+  SetSpeed(100);
   if (moveValue > 0) {
       Serial.println("move forward");
       while (initDist < getDistance()) {
@@ -100,4 +132,23 @@ void moveDist(int moveValue ,int initDist){
         go_backwards();
       }
     }
+}
+
+void maintainDistance(int desiredDistance) {
+  int currentDistance = myLidarLite.distance(); // Read current distance from LIDAR
+  int distanceError = currentDistance - desiredDistance; // Calculate the difference from the desired distance
+  SetSpeed(100);
+
+  // Threshold for distance accuracy, to avoid constant minor adjustments
+  int threshold = 2; // 2cm threshold for error
+
+  if (abs(distanceError) <= threshold) {
+    stay_put(); // Stay put if the distance is within the threshold
+  } 
+  else if (distanceError < 0) {
+    go_backwards();  // Move backward if the car is too close to the object
+  } 
+  else {
+    go_forward();// Move forward if the car is too far from the object
+  }
 }

@@ -23,7 +23,20 @@ void lcddisp() {
       printDist();
       break;
     case 2:
-
+      printMoveDist();
+      printPress();
+      break;
+    case 3:
+      printMoveDist();
+      printExe();
+      break;
+    case 4:
+      printMoveDist();
+      printPress();
+      break;
+    case 5:
+      printMoveDist();
+      printExe();
       break;
   }
 
@@ -66,4 +79,20 @@ void printJoystick() {
 
   // Print the distance
   lcd.setCursor(0, 2);
+}
+
+void printMoveDist() {
+  // Print the movedist
+  lcd.setCursor(0, 1);
+  lcd.print("move dist: ");
+  lcd.setCursor(11, 1);
+  lcd.print(joystickPotentio());
+}
+void printPress(){
+  lcd.setCursor(0, 2);
+  lcd.print("press to execute");
+}
+void printExe(){
+  lcd.setCursor(0, 2);
+  lcd.print("execute now     ");
 }

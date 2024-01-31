@@ -28,10 +28,11 @@ void parseSerialData() {
     Serial.print("Received Move value: ");
     Serial.println(moveValue);
     int initDist = getDistance();
-    SetSpeed(100);
+    
     initDist -= moveValue;
     
-    moveDist(moveValue , initDist);
+    if(program == 1) {moveDist(moveValue , initDist);}
+    if(program == 2) {executeMovementSequence(moveValue);}
   }
   // Check if the received line contains "Turn:"
   if (line.startsWith("Turn:")) {
@@ -42,7 +43,6 @@ void parseSerialData() {
     Serial.println(turnValue);
 
     int tolerance = 5;  // Adjust the tolerance as neede
-    SetSpeed(60);
 
     TurnAngle(turnValue, tolerance);
     Serial.println("done");
