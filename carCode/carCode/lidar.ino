@@ -1,4 +1,4 @@
-void updateCumulativeDistance() {
+void updateCumulativeDistance() { // week 3 exersize 1 part 2
   int currentDistance = getDistance();
 
   /* not correct yet*/

@@ -152,3 +152,14 @@ void maintainDistance(int desiredDistance) {
     go_forward();// Move forward if the car is too far from the object
   }
 }
+
+void executeMovementSequence(int number) {
+  Serial.println("start sequenz");
+  bool executing = true;
+  driveToDistance(number);
+  delay(100);
+  TurnAngle(90, 5);
+  delay(400);
+  driveToDistance(number);
+  program = 4;
+}

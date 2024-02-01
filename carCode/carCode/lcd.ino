@@ -3,6 +3,26 @@ void lcddisp() {
 
   //lcd
   lcd.clear();
+  printCompass();
+
+  if (program == 0) {
+    printJoystick();
+  } else if (program == 1) {
+    printDist();
+  } else if (program == 2 || program == 4) {
+    printMoveDist();
+    printPress();
+  } else if (program == 3 || program == 5) {
+    printMoveDist();
+    printExe();
+  }
+
+  delay(50);
+}
+
+void printCompass() {
+  float byteAngle = Compass();
+
   lcd.setCursor(0, 0);
   lcd.print("Direction: ");
 
@@ -14,36 +34,9 @@ void lcddisp() {
   if (byteAngle >= 211 && byteAngle <= 255) lcd.print("SW");
   if (byteAngle >= 256 && byteAngle <= 290) lcd.print("W");
   if (byteAngle >= 291 && byteAngle <= 344) lcd.print("NW");
-
-  switch (program) {
-    case 0:
-      printJoystick();
-      break;
-    case 1:
-      printDist();
-      break;
-    case 2:
-      printMoveDist();
-      printPress();
-      break;
-    case 3:
-      printMoveDist();
-      printExe();
-      break;
-    case 4:
-      printMoveDist();
-      printPress();
-      break;
-    case 5:
-      printMoveDist();
-      printExe();
-      break;
-  }
-
-  delay(50);
 }
 
-void printDist() {
+void printDist() {  // week 3 exersize 1 part 1
   // Get the LIDAR distance measurement
   lcd.setCursor(0, 1);
   int distance = getDistance();  // Get the distance in cm
@@ -88,11 +81,11 @@ void printMoveDist() {
   lcd.setCursor(11, 1);
   lcd.print(joystickPotentio());
 }
-void printPress(){
+void printPress() {
   lcd.setCursor(0, 2);
   lcd.print("press to execute");
 }
-void printExe(){
+void printExe() {
   lcd.setCursor(0, 2);
   lcd.print("execute now     ");
 }
