@@ -18,3 +18,10 @@ int getDistance() {
   int averageDistance = totalDistance / NUM_READINGS;  // Compute the average
   return averageDistance;                              // Return the average distance
 }
+
+double calculateSqMeter() {
+  double width = distance[0] + distance[2];
+  double height = distance[1] + distance[3];
+  double sqMeter = (width * height)/1000;
+  return sqMeter;
+}

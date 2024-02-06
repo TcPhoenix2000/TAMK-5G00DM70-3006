@@ -15,6 +15,8 @@ void lcddisp() {
   } else if (program == 3 || program == 5) {
     printMoveDist();
     printExe();
+  } else if (program == 6) {
+    printSquareM();
   }
 
   delay(50);
@@ -88,4 +90,10 @@ void printPress() {
 void printExe() {
   lcd.setCursor(0, 2);
   lcd.print("execute now     ");
+}
+void printSquareM(){
+  lcd.setCursor(0, 2);
+  lcd.print("square meters   ");
+  lcd.setCursor(16, 2);
+  lcd.print(calculateSqMeter());
 }

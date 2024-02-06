@@ -21,7 +21,7 @@ int cumulativeDistance = 0;  // Cumulative distance driven
 unsigned long lastDebounceTime = 0;
 
 // to cycle throuh programmes
-int program = 0;
+int program = 6;
 
 // lcd
 const int rs = 37, en = 36, d4 = 35, d5 = 34, d6 = 33, d7 = 32;
@@ -36,6 +36,9 @@ bool remoteControl = false;
 String paramName = "";
 int moveValue = 0;
 float turnValue = 0;
+
+// square meters
+double distance[4];
 
 
 void setup() {
@@ -105,7 +108,8 @@ void loop() {
       Serial.println("program 6");  // week 4 exersize 1 step 1
       // program 2 exe
       stay_put();
-      calculateSqMeter();
+      executeSquareMeter();
+      delay(2000);
       program = 7;
       break;
 

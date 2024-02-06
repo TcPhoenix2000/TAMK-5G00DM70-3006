@@ -1,16 +1,16 @@
-int SetSpeed(int Speed){
+int SetSpeed(int Speed) {
   pwm_L = Speed;
   pwm_R = Speed;
 }
 
-int GetSpeed(){
-  return pwm_L,pwm_R;
+int GetSpeed() {
+  return pwm_L, pwm_R;
 }
 void turn_right() {
   Serial.println("turn right");
 
 
-  pwm_R,pwm_R  =  GetSpeed();
+  pwm_R, pwm_R = GetSpeed();
 
   digitalWrite(Motor_R_dir_pin, Motor_return);
   digitalWrite(Motor_L_dir_pin, Motor_forward);
@@ -25,7 +25,7 @@ void turn_left() {
   digitalWrite(Motor_L_dir_pin, Motor_return);
   digitalWrite(Motor_R_dir_pin, Motor_forward);
 
-  pwm_R,pwm_R  =  GetSpeed();
+  pwm_R, pwm_R = GetSpeed();
   analogWrite(Motor_L_pwm_pin, pwm_L);
   analogWrite(Motor_R_pwm_pin, pwm_R);
   lcddisp();
@@ -40,7 +40,7 @@ void go_forward() {
   //pwm_R = 120; // analogRead(A8) * 0.24926686217
   //pwm_L = 120; // analogRead(A8) * 0.24926686217
 
-  pwm_R,pwm_R  =  GetSpeed();
+  pwm_R, pwm_R = GetSpeed();
   analogWrite(Motor_L_pwm_pin, pwm_L);
   analogWrite(Motor_R_pwm_pin, pwm_R);
   updateCumulativeDistance();
@@ -51,7 +51,7 @@ void go_backwards() {
   digitalWrite(Motor_R_dir_pin, Motor_return);
   digitalWrite(Motor_L_dir_pin, Motor_return);
 
-  pwm_R,pwm_R  =  GetSpeed();
+  pwm_R, pwm_R = GetSpeed();
 
   analogWrite(Motor_L_pwm_pin, pwm_L);
   analogWrite(Motor_R_pwm_pin, pwm_R);
@@ -70,26 +70,26 @@ void stay_put() {
   lcddisp();
 }
 
-void TurnAngle( int turnValue,int tolerance) {
+void TurnAngle(int turnValue, int tolerance) {
   int targetAngle = (int)(turnValue + getByteAngle()) % 361;
   SetSpeed(60);
 
   while (targetAngle < getByteAngle() - tolerance || targetAngle > getByteAngle() + tolerance) {
     if (targetAngle - getByteAngle() < 0) {
-      if (turnValue < 0){turn_left();}
-      if (turnValue > 0){turn_right();}
+      if (turnValue < 0) { turn_left(); }
+      if (turnValue > 0) { turn_right(); }
       delay(10);
     }
     if (targetAngle - getByteAngle() > 0) {
-      if (turnValue > 0){turn_right();}
-      if (turnValue < 0){turn_left();}
+      if (turnValue > 0) { turn_right(); }
+      if (turnValue < 0) { turn_left(); }
       delay(10);
     }
   }
 }
 
 void driveToDistance(int targetDistance) {
-  unsigned long startTime = millis();  // Record the start time
+  unsigned long startTime = millis();     // Record the start time
   unsigned long twoSecondTimeout = 5000;  // Set the timeout period (2000 milliseconds = 2 seconds)
 
   int initial = getDistance();
@@ -118,38 +118,36 @@ void driveToDistance(int targetDistance) {
 }
 
 
-void moveDist(int moveValue ,int initDist){
+void moveDist(int moveValue, int initDist) {
   SetSpeed(100);
   if (moveValue > 0) {
-      Serial.println("move forward");
-      while (initDist < getDistance()) {
-        go_forward();
-      }
-
-    } else if (moveValue < 0) {
-      Serial.println("move backwards");
-      while (initDist > getDistance()) {
-        go_backwards();
-      }
+    Serial.println("move forward");
+    while (initDist < getDistance()) {
+      go_forward();
     }
+
+  } else if (moveValue < 0) {
+    Serial.println("move backwards");
+    while (initDist > getDistance()) {
+      go_backwards();
+    }
+  }
 }
 
 void maintainDistance(int desiredDistance) {
-  int currentDistance = myLidarLite.distance(); // Read current distance from LIDAR
-  int distanceError = currentDistance - desiredDistance; // Calculate the difference from the desired distance
+  int currentDistance = myLidarLite.distance();           // Read current distance from LIDAR
+  int distanceError = currentDistance - desiredDistance;  // Calculate the difference from the desired distance
   SetSpeed(100);
 
   // Threshold for distance accuracy, to avoid constant minor adjustments
-  int threshold = 2; // 2cm threshold for error
+  int threshold = 2;  // 2cm threshold for error
 
   if (abs(distanceError) <= threshold) {
-    stay_put(); // Stay put if the distance is within the threshold
-  }
-  else if (distanceError < 0) {
+    stay_put();  // Stay put if the distance is within the threshold
+  } else if (distanceError < 0) {
     go_backwards();  // Move backward if the car is too close to the object
-  }
-  else {
-    go_forward();// Move forward if the car is too far from the object
+  } else {
+    go_forward();  // Move forward if the car is too far from the object
   }
 }
 
@@ -163,18 +161,15 @@ void executeMovementSequence(int number) {
   driveToDistance(number);
 }
 
-void calculateSqMeter(){
-
-  int distance[4];
-
-  for(int i = 0; i < 4; i++){
-      distance[i] = getDistance();
-      TurnAngle(90, 5);
+void executeSquareMeter(){
+  distance[0] = getDistance();
+  for (int i = 1; i <= 3; i++) {
+    delay(500);
+    TurnAngle(90, 5);
+    stay_put();
+    distance[i] = getDistance();
+    delay(500);
   }
-
-  int width = distance[0] + distance[2];
-  int height = distance[1] + distance[3];
-
-  int sqMeter = width * height;
-  Serial.println("Square meters: " + sqMeter);
 }
+
+
