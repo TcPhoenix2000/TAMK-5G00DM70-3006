@@ -84,6 +84,7 @@ void loop() {
     case 3:
       Serial.println("program 3");  // week 3 exersize 3 step 1
       remoteControl = false;
+      checkRemote();
       // program 2 exe
       executeMovementSequence(joystickPotentio());
       program = 4;
