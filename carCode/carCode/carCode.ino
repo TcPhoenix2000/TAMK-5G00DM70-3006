@@ -83,10 +83,7 @@ void loop() {
       break;
     case 3:
       Serial.println("program 3");  // week 3 exersize 3 step 1
-<<<<<<< HEAD
       remoteControl = false;
-=======
->>>>>>> 453bf512c6f29f32be50d15d848f9ed525e3d3ca
       // program 2 exe
       executeMovementSequence(joystickPotentio());
       program = 4;
