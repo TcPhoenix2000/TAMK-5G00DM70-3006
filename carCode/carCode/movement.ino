@@ -163,3 +163,19 @@ void executeMovementSequence(int number) {
   driveToDistance(number);
   program = 4;
 }
+
+void calculateSqMeter(){
+
+  int distance[4];
+
+  for(int i = 0; i < 4; i++){
+      distance[i] = getDistance();
+      TurnAngle(90, 5);
+  }
+
+  int width = distance[0] + distance[2];
+  int height = distance[1] + distance[3];
+
+  int sqMeter = width * height;
+  Serial.println("Square meters: " + sqMeter);
+}

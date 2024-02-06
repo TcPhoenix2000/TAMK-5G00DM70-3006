@@ -54,7 +54,7 @@ void setup() {
 void loop() {
   switch (program) {
     case 0:
-      Serial.println("program 0"); // week 1 & 2 exersize 2 part 1
+      Serial.println("program 0");  // week 1 & 2 exersize 2 part 1
       // Code for program 0 local drive
       remoteControl = false;
       while (analogRead(A9) >= 490 && analogRead(A9) <= 550 && analogRead(A8) >= 460 && analogRead(A8) <= 518) stay_put();
@@ -65,35 +65,42 @@ void loop() {
 
       break;
     case 1:
-    Serial.println("program 1"); // week 1 & 2 exersize 2 part 2 
+      Serial.println("program 1");  // week 1 & 2 exersize 2 part 2
       // Code for program 1 remote control
       remoteControl = true;
       stay_put();
       parseSerialData();
       break;
     case 2:
-    Serial.println("program 2"); // week 3 exersize 3 step 2
+      Serial.println("program 2");  // week 3 exersize 3 step 2
       // Code for program 2 somthing else
       remoteControl = true;
       stay_put();
       parseSerialData();
       break;
     case 3:
-    Serial.println("program 3"); // week 3 exersize 3 step 1
+      Serial.println("program 3");  // week 3 exersize 3 step 1
       // program 2 exe
       executeMovementSequence(joystickPotentio());
       break;
     case 4:
-    Serial.println("program 4"); // week 3 exersize 2 step 1
+      Serial.println("program 4");  // week 3 exersize 2 step 1
       // follow program
       maintainDistance(20);
       break;
     case 5:
-    Serial.println("program 5"); // week 3 exersize 2 step 2
+      Serial.println("program 5");  // week 3 exersize 2 step 2
       // program 2 exe
       stay_put();
       maintainDistance(joystickPotentio());
       Serial.println(joystickPotentio());
+      break;
+    case 6:
+      Serial.println("program 6");  // week 4 exersize 1 step 1
+      // program 2 exe
+      stay_put();
+      calculateSqMeter();
+      program = 7;
       break;
 
     default:
