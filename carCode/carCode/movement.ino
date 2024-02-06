@@ -9,9 +9,9 @@ int GetSpeed(){
 void turn_right() {
   Serial.println("turn right");
 
-  
+
   pwm_R,pwm_R  =  GetSpeed();
-  
+
   digitalWrite(Motor_R_dir_pin, Motor_return);
   digitalWrite(Motor_L_dir_pin, Motor_forward);
   analogWrite(Motor_L_pwm_pin, pwm_L);
@@ -50,7 +50,7 @@ void go_backwards() {
   Serial.println("go back");
   digitalWrite(Motor_R_dir_pin, Motor_return);
   digitalWrite(Motor_L_dir_pin, Motor_return);
-  
+
   pwm_R,pwm_R  =  GetSpeed();
 
   analogWrite(Motor_L_pwm_pin, pwm_L);
@@ -92,7 +92,7 @@ void driveToDistance(int targetDistance) {
   unsigned long startTime = millis();  // Record the start time
   unsigned long twoSecondTimeout = 5000;  // Set the timeout period (2000 milliseconds = 2 seconds)
 
-  int initial = getDistance(); 
+  int initial = getDistance();
   Serial.print("Initial distance: ");
   Serial.println(initial);
 
@@ -144,10 +144,10 @@ void maintainDistance(int desiredDistance) {
 
   if (abs(distanceError) <= threshold) {
     stay_put(); // Stay put if the distance is within the threshold
-  } 
+  }
   else if (distanceError < 0) {
     go_backwards();  // Move backward if the car is too close to the object
-  } 
+  }
   else {
     go_forward();// Move forward if the car is too far from the object
   }
@@ -161,5 +161,20 @@ void executeMovementSequence(int number) {
   TurnAngle(90, 5);
   delay(400);
   driveToDistance(number);
-  program = 4;
+}
+
+void calculateSqMeter(){
+
+  int distance[4];
+
+  for(int i = 0; i < 4; i++){
+      distance[i] = getDistance();
+      TurnAngle(90, 5);
+  }
+
+  int width = distance[0] + distance[2];
+  int height = distance[1] + distance[3];
+
+  int sqMeter = width * height;
+  Serial.println("Square meters: " + sqMeter);
 }
