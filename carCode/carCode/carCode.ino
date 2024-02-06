@@ -54,9 +54,10 @@ void setup() {
 void loop() {
   switch (program) {
     case 0:
-      Serial.println("program 0"); // week 1 & 2 exersize 2 part 1
+      Serial.println("program 0");  // week 1 & 2 exersize 2 part 1
       // Code for program 0 local drive
       remoteControl = false;
+      checkRemote();
       while (analogRead(A9) >= 490 && analogRead(A9) <= 550 && analogRead(A8) >= 460 && analogRead(A8) <= 518) stay_put();
       while (analogRead(A9) < 490) SetSpeed(100), turn_right();
       while (analogRead(A9) > 550) SetSpeed(100), turn_left();
@@ -65,31 +66,34 @@ void loop() {
 
       break;
     case 1:
-    Serial.println("program 1"); // week 1 & 2 exersize 2 part 2 
+      Serial.println("program 1");  // week 1 & 2 exersize 2 part 2
       // Code for program 1 remote control
       remoteControl = true;
+      checkRemote();
       stay_put();
       parseSerialData();
       break;
     case 2:
-    Serial.println("program 2"); // week 3 exersize 3 step 2
+      Serial.println("program 2");  // week 3 exersize 3 step 2
       // Code for program 2 somthing else
       remoteControl = true;
+      checkRemote();
       stay_put();
       parseSerialData();
       break;
     case 3:
-    Serial.println("program 3"); // week 3 exersize 3 step 1
+      Serial.println("program 3");  // week 3 exersize 3 step 1
+      remoteControl = false;
       // program 2 exe
       executeMovementSequence(joystickPotentio());
       break;
     case 4:
-    Serial.println("program 4"); // week 3 exersize 2 step 1
+      Serial.println("program 4");  // week 3 exersize 2 step 1
       // follow program
       maintainDistance(20);
       break;
     case 5:
-    Serial.println("program 5"); // week 3 exersize 2 step 2
+      Serial.println("program 5");  // week 3 exersize 2 step 2
       // program 2 exe
       stay_put();
       maintainDistance(joystickPotentio());
@@ -119,13 +123,16 @@ void CheckButton() {
     if (buttonState == LOW) {  // Assuming pull-up resistor
                                // Button has been pressed
       program++;
-      if (!remoteControl) {
-        Serial.println("remote control activated!");
-      } else {
-        Serial.println("remote control deactivated!");
-      }
       // Reset the debounce timer
       lastDebounceTime = millis();
     }
+  }
+}
+
+void checkRemote() {
+  if (!remoteControl) {
+    Serial.println("remote control activated!");
+  } else {
+    Serial.println("remote control deactivated!");
   }
 }
