@@ -112,6 +112,12 @@ void loop() {
       delay(2000);
       program = 7;
       break;
+    case 7:
+      Serial.println("program 7");
+      stay_put();
+      
+
+      break;
 
     default:
       // Default case, executed when program is neither 0, 1, nor 2
