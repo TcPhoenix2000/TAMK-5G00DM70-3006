@@ -70,7 +70,7 @@ void executeMovementSequence(int number) {
   driveToDistance(number);
 }
 
-void executeSquareMeter(){
+void executeSquareMeter(){ //get dist 4 sides
   distance[0] = getDistance();
   for (int i = 1; i <= 3; i++) {
     delay(500);
@@ -79,4 +79,40 @@ void executeSquareMeter(){
     distance[i] = getDistance();
     delay(500);
   }
+  TurnAngle(90, 5);
+  stay_put();
+}
+
+void find_north_turn_north(){
+  while(!(getByteAngle() <= 43 || getByteAngle() >= 345)){
+    TurnAngle(10,5);
+  }
+  stay_put();
+}
+
+void find_east_turn_east(){
+  while(!(getByteAngle() >= 85 && getByteAngle() <= 110)){
+    TurnAngle(10,5);
+  }
+  stay_put();
+}
+
+void find_west_turn_west(){
+  while(!(getByteAngle() >= 256 && getByteAngle() <= 290)){
+    TurnAngle(10,5);
+  }
+  stay_put();
+}
+
+void driveToDistanceFromWall(int targetDistance) {
+  SetSpeed(100);
+  while (getDistance() > targetDistance + 2) {
+    go_forward();
+  }
+  while (getDistance() < targetDistance + 2) {
+    go_backwards();
+  }
+
+  stay_put();  // Make sure to stop the motors after exiting the loop
+  Serial.println("Drive to distance from wall complete or timeout reached.");
 }

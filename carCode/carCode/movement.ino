@@ -9,7 +9,6 @@ int GetSpeed() {
 void turn_right() {
   Serial.println("turn right");
 
-
   pwm_R, pwm_R = GetSpeed();
 
   digitalWrite(Motor_R_dir_pin, Motor_return);
@@ -22,10 +21,10 @@ void turn_right() {
 void turn_left() {
   Serial.println("turn left");
 
+  pwm_R, pwm_R = GetSpeed();
+
   digitalWrite(Motor_L_dir_pin, Motor_return);
   digitalWrite(Motor_R_dir_pin, Motor_forward);
-
-  pwm_R, pwm_R = GetSpeed();
   analogWrite(Motor_L_pwm_pin, pwm_L);
   analogWrite(Motor_R_pwm_pin, pwm_R);
   lcddisp();
@@ -72,7 +71,7 @@ void stay_put() {
 
 void TurnAngle(int turnValue, int tolerance) {
   int targetAngle = (int)(turnValue + getByteAngle()) % 361;
-  SetSpeed(60);
+  SetSpeed(80);
 
   while (targetAngle < getByteAngle() - tolerance || targetAngle > getByteAngle() + tolerance) {
     if (targetAngle - getByteAngle() < 0) {
@@ -85,6 +84,7 @@ void TurnAngle(int turnValue, int tolerance) {
       if (turnValue < 0) { turn_left(); }
       delay(10);
     }
+    //stay_put();
   }
 }
 
