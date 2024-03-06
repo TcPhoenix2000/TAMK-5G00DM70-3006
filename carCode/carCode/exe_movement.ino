@@ -116,3 +116,51 @@ void driveToDistanceFromWall(int targetDistance) {
   stay_put();  // Make sure to stop the motors after exiting the loop
   Serial.println("Drive to distance from wall complete or timeout reached.");
 }
+
+void driveSquare(){
+  stay_put();
+  // first go start position
+  find_north_turn_north();
+
+  // move 20 from side
+  Serial.println("move 20 N");
+  driveToDistanceFromWall(20);
+  delay(2000);
+
+  find_east_turn_east();
+  // move 25 from side
+  Serial.println("move 25 E");
+  driveToDistanceFromWall(25);
+  delay(2000);
+  
+  find_west_turn_west();
+  Serial.println("W");
+  delay(2000);
+
+  //start move
+  Serial.println("get dist");
+  Serial.println("move 25 long");
+  driveToDistanceFromWall(25);
+
+  Serial.println("turn -90");
+  TurnAngle(-98, 25);
+  stay_put();
+  delay(2000);
+  Serial.println("move 20 long");
+  driveToDistanceFromWall(20);
+
+  Serial.println("turn -90");
+  TurnAngle(-100, 25);
+  stay_put();
+  delay(2000);
+  Serial.println("move 25 long Back");
+  driveToDistanceFromWall(25);
+
+
+  Serial.println("turn -90");
+  TurnAngle(-110, 25);
+  Serial.println("move 20 long Back");
+  driveToDistanceFromWall(20);
+  stay_put();
+
+}
