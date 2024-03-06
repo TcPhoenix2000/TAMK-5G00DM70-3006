@@ -1,6 +1,7 @@
 #include <Wire.h>
 #include <LiquidCrystal.h>
 #include <LIDARLite.h>
+#include <ArduinoJson.h>
 
 #define Motor_forward 1
 #define Motor_return 0
@@ -22,7 +23,7 @@ unsigned long lastDebounceTime = 0;
 
 // to cycle throuh programmes
 int init_program = 8;
-int program = 0;
+int program = init_program;
 
 // lcd
 const int rs = 37, en = 36, d4 = 35, d5 = 34, d6 = 33, d7 = 32;
@@ -137,11 +138,12 @@ void loop() {
 
     case 8://
       // week 7 2-way communication
+      Serial.println("programm 8");
       remoteControl = true;
       stay_put();
       writeSerialData();
 
-      delay(10000);
+      delay(1000);
       break;
 
     default:// Reset program to 0

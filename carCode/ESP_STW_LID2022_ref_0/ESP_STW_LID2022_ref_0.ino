@@ -162,7 +162,7 @@ void setup()
   server.on("/from_MEGA", HTTP_GET, [](AsyncWebServerRequest * request)
   {
     request->send_P(200, "text/plain", string_to_JS().c_str());               // return value to web page JS
-
+    Serial.println(" Mega GET ");
   });
 
 
@@ -184,6 +184,7 @@ String processor(const String& var)
 
 String string_to_JS()                                                             // funtion to be called with GET from_MEGA tag
 {
+  Serial.println(from_mega);
   return from_mega;
 }
 
@@ -234,6 +235,6 @@ void serial_read()                                    // read serial in string, 
 
   }                                                 // while END , End of message  LF
 
-  // Serial.println(buf);
+  Serial.println(buf);
 
 }                                                   // end of serial read
