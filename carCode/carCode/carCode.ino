@@ -21,6 +21,7 @@ int cumulativeDistance = 0;  // Cumulative distance driven
 unsigned long lastDebounceTime = 0;
 
 // to cycle throuh programmes
+int init_program = 8;
 int program = 0;
 
 // lcd
@@ -40,6 +41,8 @@ float turnValue = 0;
 // square meters
 double distance[4];
 
+//Serial    pin 0  rx and  1 tx used by pc/laptop
+//Serial2   pin 17 rx and 16 tx used by esp8266
 
 void setup() {
   Serial.begin(115200);
@@ -126,12 +129,24 @@ void loop() {
     case 7:// drive square
       Serial.println("program 7"); // week 5 exersize 2
       driveSquare();
+
+      // to do 
+      // count encoderpulses to messure total distance driven !!!
       program = 8;
       break;
 
-    default:
+    case 8://
+      // week 7 2-way communication
+      remoteControl = true;
+      stay_put();
+      writeSerialData();
+
+      delay(10000);
+      break;
+
+    default:// Reset program to 0
       // Default case, executed when program is neither 0, 1, nor 2
-      program = 0;  // Reset program to 0
+      program = init_program;  // Reset program to init program
       break;
   }
 

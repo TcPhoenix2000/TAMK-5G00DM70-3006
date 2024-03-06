@@ -1,3 +1,4 @@
+//read esp serial data
 void parseSerialData() {
   //serialEvent();
   String line = Serial2.readStringUntil('\n');  // Read a line from Serial until newline character
@@ -28,11 +29,11 @@ void parseSerialData() {
     Serial.print("Received Move value: ");
     Serial.println(moveValue);
     int initDist = getDistance();
-    
+
     initDist -= moveValue;
-    
-    if(program == 1) {moveDist(moveValue , initDist);}
-    if(program == 2) {executeMovementSequence(moveValue);}
+
+    if (program == 1) { moveDist(moveValue, initDist); }
+    if (program == 2) { executeMovementSequence(moveValue); }
   }
   // Check if the received line contains "Turn:"
   if (line.startsWith("Turn:")) {
@@ -46,6 +47,16 @@ void parseSerialData() {
 
     TurnAngle(turnValue, tolerance);
     Serial.println("done");
-    
+  }
+}
+
+// write to esp
+void writeSerialData() {
+  if (Serial2.available() > 0) {
+    Serial2.println("begin:");
+    Serial2.println("param: dist");
+    Serial2.println(getDistance());
+    //Serial2.println("param: dire");
+    //Serial2.println(getByteAngle());
   }
 }
