@@ -3,7 +3,7 @@
 <html>
 
 <style>
-   
+
         h1 span {
             font-size: 0.6em;
         }
@@ -15,8 +15,8 @@
           overflow: hidden;
         }
         .container {
-          height: 450px;
-          width: 250px;
+          height: 550px;
+          width: 350px;
         }
         .container > div {
           float: left;
@@ -24,6 +24,62 @@
         .control {
             margin-right: 70px;
         }
+
+		#Progress_Status {
+			width: 50%;
+			background-color: #ddd;
+		}
+
+		#myprogressBar {
+			width: 2%;
+			height: 20px;
+			background-color: #4CAF50;
+		}
+
+		.compass {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+  margin: auto;
+}
+
+.compass > .arrow {
+  position: absolute;
+  width: 0;
+  height: 0;
+  top: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-style: solid;
+  border-width: 10px 5px 0 5px;
+  border-color: red transparent transparent transparent;
+  z-index: 1;
+}
+
+.compass > .compass-circle,
+.compass > .my-point {
+  position: absolute;
+  width: 80%;
+  height: 80%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  transition: transform 0.1s ease-out;
+  background: url(https://cdn.onlinewebfonts.com/svg/img_467023.png) center
+    no-repeat;
+  background-size: contain;
+}
+
+.compass > .my-point {
+  opacity: 0;
+  width: 20%;
+  height: 20%;
+  background: rgb(8, 223, 69);
+  border-radius: 50%;
+  transition: opacity 0.5s ease-out;
+}
 
 </style>
 
@@ -44,11 +100,11 @@
 
         <div class="container">
             <div class="control">
-			<div id="rd_slider_1"></div>  
+			<div id="rd_slider_1"></div>
 
-					
+
 	<h3>Drive</h3>
-			
+
 		<br/>
 			<button onclick="FRW5()">Forw 5cm</button>
 		<br/>
@@ -59,51 +115,106 @@
 		<br/>
 			<button onclick="RET5()">Ret 5cm</button>
 		<br/>
-				
+
 		<p>
-		
+
     <span class="sensor-labels">Distance</span>
     <span id="Box_lidar_dist">%Dist%</span>
 
     <sup class="units">cm</sup>
 
+	<br>
 
-  
-    
+
+	<h3>Progress:</h3>
+	<div id="Progress_Status">
+		<div id="myprogressBar"></div>
+	  </div>
+	<br>
+
+
+	<h3>Compass:</h3>
+
+	<div class="compass">
+		<div class="arrow"></div>
+		<div class="compass-circle"></div>
+		<div class="my-point"></div>
+	  </div>
+
+
+
+
+
+
+
+
 <script type="text/javascript">
 
 //////////////////////////////////////////////////////////// JS start /////////////////////
 
+let totalDistance = 100;
+const compassCircle = document.querySelector(".compass-circle");
+const myPoint = document.querySelector(".my-point");
+let compass;
+
+let pointDegree;
+
+//progess bar
+function updateProgressBar(distanceLeft) {
+  var progressPercentage = ((totalDistance - distanceLeft) / totalDistance) * 100;
+  document.getElementById("myprogressBar").style.width = progressPercentage + "%";
+}
+
+
+function updateCompass(angle) {
+  var compassCircle = document.querySelector(".compass-circle");
+  compassCircle.style.transform = `translate(-50%, -50%) rotate(${angle}deg)`;
+}
+
+
+function simulateSensorUpdates() {
+  // Simulating sensor value updates - replace this with actual data fetching
+  var distanceLeft = Math.floor(Math.random() * totalDistance);
+  var angle = Math.floor(Math.random() * 360);
+
+  updateProgressBar(distanceLeft);
+  updateCompass(angle);
+}
+
+setInterval(simulateSensorUpdates, 2000);
+
+
+//TODO - read data from car sensors
 
 	var From_Mega=0;									// string variable from server/mega
 
-	var dire=0;										// direction					  	 
+	var dire=0;										// direction
 	var dist=0;										// distance
 	var mode=0;										// mode 1 = direction value 2=distance vale
 
-	
+
 	var valx = document.getElementById("rd_slider_1").value;				// roundslider variable
 
 
 
-  setInterval(function ( )									// timer inreval function	 
+  setInterval(function ( )									// timer inreval function
   {
     var xhttp = new XMLHttpRequest();
 
-    xhttp.onreadystatechange = function() 
+    xhttp.onreadystatechange = function()
 	{
-      		if (this.readyState == 4 && this.status == 200) 
+      		if (this.readyState == 4 && this.status == 200)
 			{
         			From_Mega=parseInt(this.responseText);				//  input string from server c++/Mega
 
 				document.getElementById("Box_lidar_dist").innerHTML = From_Mega;
-				
+
       			}
     	};
 
     xhttp.open("GET", "/from_MEGA", true);							// request string from server
 
-    xhttp.send();
+   // xhttp.send();
 
   }, 500 ) ;											// Interval time 0.5 Sec
 
@@ -115,31 +226,31 @@
       		var xmlHttp = new XMLHttpRequest();
 
     	 	xmlHttp.onreadystatechange = function()
-		  { 
+		  {
     			 	if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
             							 callback(xmlHttp.responseText);
   		  }
-				
-		if (mode==1) { 	xmlHttp.open("GET",'/?dire='+dire, true); };			// send direction  TAG "dire"	true for asynchronous 
-    		if (mode==2) {  xmlHttp.open("GET",'/?dist='+dist, true); };			// send distance   TAG "dist"	true for asynchronous 
+
+		if (mode==1) { 	xmlHttp.open("GET",'/?dire='+dire, true); };			// send direction  TAG "dire"	true for asynchronous
+    		if (mode==2) {  xmlHttp.open("GET",'/?dist='+dist, true); };			// send distance   TAG "dist"	true for asynchronous
 		xmlHttp.send(null);
 	}
-	
 
-	 
-	function tryme(param1)									// empty func	
+
+
+	function tryme(param1)									// empty func
 	 {	  }
 
 
-	
-		
-	
-$(document).ready(function ()								// ready start 
+
+
+
+$(document).ready(function ()								// ready start
 {
     $("#rd_slider_1").roundSlider							// define roundslider in JS
 	(
 		{
-			   
+
 			radius: 85,
 			min: -180,
 			max: 180,
@@ -149,75 +260,75 @@ $(document).ready(function ()								// ready start
             		value: 0,
 
 			startAngle: 315,
-			
-				change: function(args) 
+
+				change: function(args)
 					{
-						 
+
 						dire=args.value;			 // direction variable set
 
-						send_srw_val(dire);			 // call type_sl_val	
-						
-					}	
-					 
-				
+						send_srw_val(dire);			 // call type_sl_val
+
+					}
+
+
         }
-			
+
 	);
 
 });											// ready ends
 
 
-		
-	function send_srw_val(val)							// send stw value  
+
+	function send_srw_val(val)							// send stw value
 	{
 
 	 mode=1;	 								// Steering wheel = mode 1
 	 httpGetAsync(tryme);
-	}	
-	
-	
+	}
+
+
 	function FRW5() 								// Send drive command 5cm
 	{
 
 	 mode=2;									// drive motors = mode 2
 	 dist=5; 									// drive distance
-	 httpGetAsync(tryme); 
+	 httpGetAsync(tryme);
 	 }
 
-	function RET5() 
+	function RET5()
 	{
- 
+
 	 mode=2;
 	 dist=-5;
-	 httpGetAsync(tryme); 
+	 httpGetAsync(tryme);
 	 }
-	 
- 	function FRW1() 
+
+ 	function FRW1()
 	{
 
 	 mode=2;
-	 dist=1; 
-	 httpGetAsync(tryme); 
+	 dist=1;
+	 httpGetAsync(tryme);
 	 }
 
-	function RET1() 
+	function RET1()
 	{
 
 	 mode=2;
 	 dist=-1;
-	 httpGetAsync(tryme); 
+	 httpGetAsync(tryme);
 	 }
-	 
-	 
-	 
-	 
 
- 
+
+
+
+
+
 
 ///////////////////////////////////////////// JS END
 
     </script>
-	
+
 
 </body>
 </html>
