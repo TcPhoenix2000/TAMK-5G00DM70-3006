@@ -76,6 +76,8 @@
           <h3>Drive</h3>
 
           <br />
+          <button onclick="FRW20()">Forw 20cm</button>
+          <br />
           <button onclick="FRW5()">Forw 5cm</button>
           <br />
           <button onclick="FRW1()">Forw 1cm</button>
@@ -84,6 +86,8 @@
           <button onclick="RET1()">Ret 1cm</button>
           <br />
           <button onclick="RET5()">Ret 5cm</button>
+          <br />
+          <button onclick="RET20()">Ret 20cm</button>
           <br />
 
           <p></p>
@@ -228,6 +232,19 @@
       function send_srw_val(val) {
         // send stw value
         mode = 1; // Steering wheel = mode 1
+        httpGetAsync(tryme);
+      }
+
+      function FRW20() {
+        // Send drive command 5cm
+        mode = 2; // drive motors = mode 2
+        dist = 20; // drive distance
+        httpGetAsync(tryme);
+      }
+
+      function RET20() {
+        mode = 2;
+        dist = -20;
         httpGetAsync(tryme);
       }
 
