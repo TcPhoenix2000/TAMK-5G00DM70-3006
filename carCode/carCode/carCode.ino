@@ -23,7 +23,7 @@ int cumulativeDistance = 0;  // Cumulative distance driven
 unsigned long lastDebounceTime = 0;
 
 // to cycle throuh programmes
-int init_program = 8;
+int init_program = 1;
 int program = init_program;
 
 // lcd
@@ -144,7 +144,7 @@ void loop() {
       stay_put();
       writeSerialData();
       parseSerialData(); // to get ip
-      
+
       Serial.println(IPAddress);
 
       delay(1000);

@@ -13,10 +13,3 @@ float Compass() {
 float getByteAngle(){
   return Compass();
 }
-
-void find_north(){
-
-  while(!(byteAngle <= 43 || byteAngle >= 345)){
-    turnAngle();
-  }
-}
