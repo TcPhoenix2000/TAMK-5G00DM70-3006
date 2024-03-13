@@ -123,8 +123,8 @@
 
       //progess bar
       function updateProgressBar(distanceLeft) {
-        var progressPercentage =
-          ((totalDistance - distanceLeft) / totalDistance) * 100;
+        var progressPercentage = 100 - distanceLeft;
+          //((totalDistance - distanceLeft) / totalDistance) * 100;
         myprogressBar.style.width = progressPercentage + "px";
       }
 
@@ -171,6 +171,7 @@
 
             document.getElementById("Box_lidar_dist").innerHTML = distance;
             updateCompass(direction);
+            updateProgressBar(distance);
           }
         };
 
