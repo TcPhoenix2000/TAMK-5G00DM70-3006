@@ -1,6 +1,7 @@
 #include <Wire.h>
 #include <LiquidCrystal.h>
 #include <LIDARLite.h>
+#include <EEPROM.h>
 
 #define Motor_forward 1
 #define Motor_return 0
@@ -10,6 +11,18 @@
 #define Motor_R_pwm_pin 10
 #define Joystick_SW_pin 19
 #define CMPS14_address 0x60  // compass
+
+// EEPROM address to store the calibration data
+const int eepromAddress = 0; 
+
+// Variable to hold the distance per pulse value
+float distancePerPulse = 0.0;
+
+//Encoder pins and count variables
+const int encoderRightPin = 24;
+const int encoderLeftPin = 23;
+volatile unsigned long encoderRightCount = 0;
+volatile unsigned long encoderLeftCount = 0;
 
 // lidar
 LIDARLite myLidarLite;
@@ -52,6 +65,14 @@ void setup() {
   lcd.begin(20, 4);
   initialDistance = getDistance();  //LIDAR
   Serial.println("initialized");
+
+   // Initialize encoder pins as inputs
+  pinMode(encoderRightPin, INPUT);
+  pinMode(encoderLeftPin, INPUT);
+
+  // Attach interrupts for encoder pulse.. to be checked if RISING should be CHANGE if we need to count both rising and falling
+  attachInterrupt(digitalPinToInterrupt(encoderRightPin), incrementRightEncoder, RISING);
+  attachInterrupt(digitalPinToInterrupt(encoderLeftPin), incrementLeftEncoder, RISING);
 
   attachInterrupt(digitalPinToInterrupt(Joystick_SW_pin), CheckButton, FALLING);
   Serial2.begin(9600);
@@ -140,6 +161,12 @@ void loop() {
       remoteControl = true;
       stay_put();
       writeSerialData();
+
+      case 9://
+      // week 4 exercise 3- Encoder Calibration
+      lcddisp();
+      calibrateEncoders();
+
 
       delay(10000);
       break;

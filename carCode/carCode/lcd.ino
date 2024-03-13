@@ -18,6 +18,9 @@ void lcddisp() {
   } else if (program == 6) {
     printSquareM();
   }
+  else if (program == 9) {
+    printDistancePerPulse();
+  }
 
   delay(50);
 }
