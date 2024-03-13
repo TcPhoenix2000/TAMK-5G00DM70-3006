@@ -3,6 +3,7 @@
 #include <LIDARLite.h>
 #include <ArduinoJson.h>
 
+String IPAddress;
 #define Motor_forward 1
 #define Motor_return 0
 #define Motor_L_dir_pin 7
@@ -142,6 +143,9 @@ void loop() {
       remoteControl = true;
       stay_put();
       writeSerialData();
+      parseSerialData(); // to get ip
+      
+      Serial.println(IPAddress);
 
       delay(1000);
       break;

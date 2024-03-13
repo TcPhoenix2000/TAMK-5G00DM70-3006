@@ -3,6 +3,16 @@ void parseSerialData() {
   //serialEvent();
   String line = Serial2.readStringUntil('\n');  // Read a line from Serial until newline character
 
+  if( line.startsWith("ip:")){
+    paramName = line;  // Extract and trim the parameter name
+    if (paramName.startsWith("ip:")) {
+      Serial.print("ip addrass =");
+      IPAddress = line.substring(3);
+      Serial.println(IPAddress);
+      // Perform actions for "dist"
+    }
+  }
+
   // Check if the received line contains "Param name:"
   if (line.startsWith("Param name:")) {
     paramName = line.substring(12);  // Extract and trim the parameter name
