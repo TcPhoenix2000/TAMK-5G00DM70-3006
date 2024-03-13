@@ -2,7 +2,10 @@
 #include <LiquidCrystal.h>
 #include <LIDARLite.h>
 #include <EEPROM.h>
+#include <ArduinoJson.h>
 
+
+String IPAddress;
 #define Motor_forward 1
 #define Motor_return 0
 #define Motor_L_dir_pin 7
@@ -34,8 +37,8 @@ int cumulativeDistance = 0;  // Cumulative distance driven
 unsigned long lastDebounceTime = 0;
 
 // to cycle throuh programmes
-int init_program = 8;
-int program = 0;
+int init_program = 1;
+int program = init_program;
 
 // lcd
 const int rs = 37, en = 36, d4 = 35, d5 = 34, d6 = 33, d7 = 32;
@@ -158,20 +161,26 @@ void loop() {
 
     case 8://
       // week 7 2-way communication
+      Serial.println("programm 8");
       remoteControl = true;
       stay_put();
       writeSerialData();
+      parseSerialData(); // to get ip
+      Serial.println(IPAddress);
+
+      delay(1000);
+      break;
+
 
       case 9://
-      // week 4 exercise 3- Encoder Calibration
+      // week 4 exercise 3- Encoder Calibration - BETA
       lcddisp();
       calibrateEncoders();
-
-
       delay(10000);
       break;
 
-    default:// Reset program to 0
+      
+     default:// Reset program to 0
       // Default case, executed when program is neither 0, 1, nor 2
       program = init_program;  // Reset program to init program
       break;

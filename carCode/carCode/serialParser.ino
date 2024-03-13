@@ -2,6 +2,17 @@
 void parseSerialData() {
   //serialEvent();
   String line = Serial2.readStringUntil('\n');  // Read a line from Serial until newline character
+  //Serial.println(line);
+
+  if( line.startsWith("ip:")){
+    paramName = line;  // Extract and trim the parameter name
+    if (paramName.startsWith("ip:")) {
+      Serial.print("ip addrass =");
+      IPAddress = line.substring(3);
+      Serial.println(IPAddress);
+      // Perform actions for "dist"
+    }
+  }
 
   // Check if the received line contains "Param name:"
   if (line.startsWith("Param name:")) {
@@ -52,11 +63,18 @@ void parseSerialData() {
 
 // write to esp
 void writeSerialData() {
-  if (Serial2.available() > 0) {
-    Serial2.println("begin:");
-    Serial2.println("param: dist");
-    Serial2.println(getDistance());
-    //Serial2.println("param: dire");
-    //Serial2.println(getByteAngle());
-  }
+  
+  // Create a JSON document
+  StaticJsonDocument<200> doc;
+
+  // Add data to the JSON document
+  doc["dist"] = getDistance();
+  doc["dire"] = getByteAngle();
+
+  // Serialize the JSON document into a string
+  char jsonBuffer[200];
+  serializeJson(doc, jsonBuffer);
+
+  // Send the JSON string over Serial2
+  Serial2.println(jsonBuffer);
 }
