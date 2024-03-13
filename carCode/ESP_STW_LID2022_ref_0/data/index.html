@@ -123,7 +123,7 @@
 
       //progess bar
       function updateProgressBar(distanceLeft) {
-        var progressPercentage = 100 - distanceLeft;
+        var progressPercentage = 200 - (distanceLeft * 2);
           //((totalDistance - distanceLeft) / totalDistance) * 100;
         myprogressBar.style.width = progressPercentage + "px";
       }
