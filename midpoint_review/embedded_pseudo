@@ -1,0 +1,54 @@
+variables:
+    move_distance = 20 // maximum move distance in centimeters
+    encoder_distance = 0 // distance driven measured by the encoder
+    lidar_distance = 0 // distance measured by the lidar sensor
+    obstacle_distance_threshold = 5 // distance threshold for detecting obstacles
+    slow_speed = 30 // percentage of maximum speed when obstacles are nearby
+    fast_speed = 70 // percentage of maximum speed when no obstacles are nearby
+    rotation_angle = 60 // angle to rotate when encountering obstacles
+
+functions:
+    check_obstacle_distance():
+        // function to check obstacle distance using lidar sensor
+        if lidar_distance < obstacle_distance_threshold:
+        send_warning_to_webpage("Warning!") // send warning to ESP/webpage
+            stop_car() // stop immediately if obstacles are too close
+        else if lidar_distance < 30:
+            move_slow() // move slowly if obstacles are nearby
+        else:
+            move_fast() // move faster if no obstacles are nearby
+
+    move_forward(distance):
+        // function to move the car forward by a given distance
+        // implement logic to move the car and update encoder_distance
+
+    rotate(angle):
+        // function to rotate the car by a given angle
+        // implement logic to rotate the car and update direction
+
+    stop_car():
+        // function to stop the car immediately
+        // implement logic to stop the car
+
+    move_slow():
+        // function to move the car at slow speed
+        // implement logic to adjust car speed
+
+    move_fast():
+        // function to move the car at fast speed
+        // implement logic to adjust car speed
+
+main program:
+    loop:
+        // continuously monitor and control the car
+        receive_commands_from_webpage() // receive TURN and MOVE commands from ESP/webpage
+        check_obstacle_distance() // check lidar distance for obstacles
+        if obstacle_detected():
+            stop_car() // stop the car if obstacles are detected
+            if lidar_distance < 5 and move_forward_command_received():
+                while lidar_distance < 5:
+                    rotate(rotation_angle) // rotate 60 degrees until no obstacles closer than 5 cm
+                    if rotated_360_degrees(): //check if inital angel is reached
+                        stop_car() // stop the car if obstacles are all around
+        else if move_forward_command_received():
+            move_forward(move_distance) // move forward by default distance
