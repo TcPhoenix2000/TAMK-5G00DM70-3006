@@ -43,6 +43,40 @@ void moveDist(int moveValue, int initDist) {
   }
 }
 
+void moveDistSpeed(int moveValue, int initDist) {
+  SetSpeed(100);
+  if (moveValue > 0) {
+    Serial.println("move forward");
+    while (initDist < getDistance()) {
+      if(getDistance() < 15) {
+        Serial.println("Stop");
+        turnIfBelow15();
+        break;
+      } else if(getDistance() < 30) {
+        SetSpeed(40);
+        Serial.println("Speed 40");
+      } else if (getDistance() > 30) {
+        SetSpeed(100);
+        Serial.println("Speed 100");
+      }
+      go_forward();
+    }
+
+  } else if (moveValue < 0) {
+    Serial.println("move backwards");
+    while (initDist > getDistance()) {
+      go_backwards();
+    }
+  }
+}
+
+int turnIfBelow15(){
+  turnsTaken++;
+  if(turnsTaken < 6) {
+     TurnAngle(60, 5);
+  }
+}
+
 void maintainDistance(int desiredDistance) {
   int currentDistance = myLidarLite.distance();           // Read current distance from LIDAR
   int distanceError = currentDistance - desiredDistance;  // Calculate the difference from the desired distance

@@ -1,8 +1,9 @@
-//read esp serial data
+  //read esp serial data
 void parseSerialData() {
   //serialEvent();
   String line = Serial2.readStringUntil('\n');  // Read a line from Serial until newline character
   //Serial.println(line);
+
 
   if( line.startsWith("ip:")){
     paramName = line;  // Extract and trim the parameter name
@@ -13,6 +14,7 @@ void parseSerialData() {
       // Perform actions for "dist"
     }
   }
+  
 
   // Check if the received line contains "Param name:"
   if (line.startsWith("Param name:")) {
@@ -43,8 +45,11 @@ void parseSerialData() {
 
     initDist -= moveValue;
 
-    if (program == 1) { moveDist(moveValue, initDist); }
-    if (program == 2) { executeMovementSequence(moveValue); }
+   if (program == 1) { moveDist(moveValue, initDist); }
+   if (program == 2) { executeMovementSequence(moveValue); }
+    if (program == 10) { 
+      Serial.print("use new movement");
+      moveDistSpeed(moveValue, initDist); }
   }
   // Check if the received line contains "Turn:"
   if (line.startsWith("Turn:")) {

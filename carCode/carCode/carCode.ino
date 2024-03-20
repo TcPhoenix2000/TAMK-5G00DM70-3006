@@ -26,6 +26,7 @@ const int encoderRightPin = 24;
 const int encoderLeftPin = 23;
 volatile unsigned long encoderRightCount = 0;
 volatile unsigned long encoderLeftCount = 0;
+int turnsTaken = 0;
 
 // lidar
 LIDARLite myLidarLite;
@@ -37,7 +38,7 @@ int cumulativeDistance = 0;  // Cumulative distance driven
 unsigned long lastDebounceTime = 0;
 
 // to cycle throuh programmes
-int init_program = 1;
+int init_program = 10;
 int program = init_program;
 
 // lcd
@@ -161,12 +162,13 @@ void loop() {
 
     case 8://
       // week 7 2-way communication
-      Serial.println("programm 8");
+      //Serial.println("programm 8");
       remoteControl = true;
+     // checkRemote();
       stay_put();
       writeSerialData();
       parseSerialData(); // to get ip
-      Serial.println(IPAddress);
+     // Serial.println(IPAddress);
 
       delay(1000);
       break;
@@ -177,6 +179,15 @@ void loop() {
       lcddisp();
       calibrateEncoders();
       delay(10000);
+      break;
+
+      case 10:
+       //Serial.println("program 10");  // week 10 midpoint
+      
+      remoteControl = true;
+     // checkRemote();
+      stay_put();
+      parseSerialData();
       break;
 
       

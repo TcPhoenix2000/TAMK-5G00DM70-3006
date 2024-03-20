@@ -7,7 +7,7 @@ void lcddisp() {
 
   if (program == 0) {
     printJoystick();
-  } else if (program == 1) {
+  } else if (program == 1 || program == 10) {
     printDist();
   } else if (program == 2 || program == 4) {
     printMoveDist();
