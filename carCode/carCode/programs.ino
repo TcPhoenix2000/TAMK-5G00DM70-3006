@@ -112,6 +112,10 @@ void programSwitcher() {
       //writeSerialData();
       break;
     case 11:
+       remoteControl = true;
+      // checkRemote();
+      stay_put();
+      parseSerialData();
       //Serial.println("program 11");  // week 10 midpoint
       uint16_t clear, red, green, blue;
       tcs.getRGBC(&red, &green, &blue, &clear);

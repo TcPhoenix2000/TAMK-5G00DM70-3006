@@ -50,7 +50,11 @@ void parseSerialData() {
     if (program == 10) { 
       Serial.print("use new movement");
       moveDistSpeed(moveValue, initDist); }
+        if (program == 11) {
+    moveDistColor(moveValue, initDist);
   }
+  }
+
   // Check if the received line contains "Turn:"
   if (line.startsWith("Turn:")) {
     turnValue = line.substring(5).toInt();  // Extract the value after "Turn:"

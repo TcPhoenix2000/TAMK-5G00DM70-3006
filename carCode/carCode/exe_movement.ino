@@ -44,19 +44,44 @@ void moveDist(int moveValue, int initDist) {
 }
 
 
-  blue// 203 282 343
-  red//253 303 352
-  green// 218 343 319
+  //      r   g   b
+  //blue 203 282 343
+  //red 253 303 352
+  //green  218 343 319
 
 void moveDistColor(int moveValue, int initDist) {
-  SetSpeed(100);
+  SetSpeed(70);
+     uint16_t clear, red, green, blue;
+      tcs.getRGBC(&red, &green, &blue, &clear);
   if (moveValue > 0) {
-    if(
-    
-    Serial.println("move forward");
+        
     while (initDist < getDistance()) {
+        //turn left if red
+    if((red >= 235 && red <= 270) && (green >= 285 && green <= 315) && (blue >= 235 && blue <= 270)) {
+      Serial.println("turning left");
+      TurnAngle(-90,20);
+      break;
+    }
+
+     //turn right if blue
+    if((red >= 240 && red <= 265) && (green >= 290 && green <= 315) && (blue >= 335 && blue <= 365)) {
+      Serial.println("turning right");
+      TurnAngle(90,10);
+      break;
+    }
+
+        //stop if green
+    if((red >= 200 && red <= 230) && (green >= 320 && green <= 360) && (blue >= 300 && blue <= 340)) {
+      Serial.println("turning right");
+      stay_put();
+      break;
+    }
+
+    Serial.println("move forward");
       go_forward();
     }
+  
+
 
   } else if (moveValue < 0) {
     Serial.println("move backwards");
