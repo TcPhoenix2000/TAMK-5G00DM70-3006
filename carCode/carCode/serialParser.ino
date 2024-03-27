@@ -70,7 +70,7 @@ void parseSerialData() {
 void writeSerialData() {
   
   // Create a JSON document
-  StaticJsonDocument<200> doc;
+  JsonDocument doc;
 
   // Add data to the JSON document
   doc["dist"] = getDistance();
@@ -82,4 +82,6 @@ void writeSerialData() {
 
   // Send the JSON string over Serial2
   Serial2.println(jsonBuffer);
+
+  delay(50);
 }

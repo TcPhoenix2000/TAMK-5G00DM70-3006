@@ -1,5 +1,5 @@
 int SetSpeed(int Speed) {
-  pwm_L = Speed;
+  pwm_L = Speed + 10;
   pwm_R = Speed;
 }
 

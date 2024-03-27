@@ -3,6 +3,7 @@
 #include <LIDARLite.h>
 #include <EEPROM.h>
 #include <ArduinoJson.h>
+#include <DFRobot_TCS34725.h>
 
 
 String IPAddress;
@@ -15,8 +16,16 @@ String IPAddress;
 #define Joystick_SW_pin 19
 #define CMPS14_address 0x60  // compass
 
+// color sensor
+#define redpin 3
+#define greenpin 5
+#define bluepin 6
+#define commonAnode true
+byte gammatable[256];
+DFRobot_TCS34725 tcs = DFRobot_TCS34725(&Wire, TCS34725_ADDRESS,TCS34725_INTEGRATIONTIME_50MS,TCS34725_GAIN_4X);
+
 // EEPROM address to store the calibration data
-const int eepromAddress = 0; 
+const int eepromAddress = 0;
 
 // Variable to hold the distance per pulse value
 float distancePerPulse = 0.0;
@@ -38,7 +47,7 @@ int cumulativeDistance = 0;  // Cumulative distance driven
 unsigned long lastDebounceTime = 0;
 
 // to cycle throuh programmes
-int init_program = 10;
+int init_program = 11;
 int program = init_program;
 
 // lcd
@@ -70,132 +79,42 @@ void setup() {
   initialDistance = getDistance();  //LIDAR
   Serial.println("initialized");
 
-   // Initialize encoder pins as inputs
-  pinMode(encoderRightPin, INPUT);
-  pinMode(encoderLeftPin, INPUT);
+  if (tcs.begin()) {
+    Serial.println("Found sensor");
+  } else {
+    Serial.println("No TCS34725 found ... check your connections");
+    while (1)
+      ;  // halt!
+  }
+  for (int i = 0; i < 256; i++) {
+    float x = i;
+    x /= 255;
+    x = pow(x, 2.5);
+    x *= 255;
 
-  // Attach interrupts for encoder pulse.. to be checked if RISING should be CHANGE if we need to count both rising and falling
-  attachInterrupt(digitalPinToInterrupt(encoderRightPin), incrementRightEncoder, RISING);
-  attachInterrupt(digitalPinToInterrupt(encoderLeftPin), incrementLeftEncoder, RISING);
+    if (commonAnode) {
+      gammatable[i] = 255 - x;
+    } else {
+      gammatable[i] = x;
+    }
+    //Serial.println(gammatable[i]);
+  }
 
-  attachInterrupt(digitalPinToInterrupt(Joystick_SW_pin), CheckButton, FALLING);
-  Serial2.begin(9600);
+
+// Initialize encoder pins as inputs
+pinMode(encoderRightPin, INPUT);
+pinMode(encoderLeftPin, INPUT);
+
+// Attach interrupts for encoder pulse.. to be checked if RISING should be CHANGE if we need to count both rising and falling
+attachInterrupt(digitalPinToInterrupt(encoderRightPin), incrementRightEncoder, RISING);
+attachInterrupt(digitalPinToInterrupt(encoderLeftPin), incrementLeftEncoder, RISING);
+
+attachInterrupt(digitalPinToInterrupt(Joystick_SW_pin), CheckButton, FALLING);
+Serial2.begin(9600);
 }
 
 void loop() {
-  switch (program) {
-    case 0:// Code for program 0 local drive
-      Serial.println("program 0");  // week 1 & 2 exersize 2 part 1
-      
-      remoteControl = false;
-      checkRemote();
-      while (analogRead(A9) >= 490 && analogRead(A9) <= 550 && analogRead(A8) >= 460 && analogRead(A8) <= 518) stay_put();
-      while (analogRead(A9) < 490) SetSpeed(100), turn_right();
-      while (analogRead(A9) > 550) SetSpeed(100), turn_left();
-      while (analogRead(A8) > 518) SetSpeed(100), go_backwards();
-      while (analogRead(A8) < 460) SetSpeed(100), go_forward();
-
-      break;
-
-    case 1:// Code for program 1 remote control
-      Serial.println("program 1");  // week 1 & 2 exersize 2 part 2
-      remoteControl = true;
-      checkRemote();
-      stay_put();
-      parseSerialData();
-      break;
-
-    case 2:// Step 2: Send the distance value via ESP with a command of your choice
-      Serial.println("program 2");  // week 3 exersize 3 step 2
-      
-      remoteControl = true;
-      checkRemote();
-      stay_put();
-      parseSerialData();
-      break;
-
-    case 3:// drive L of potentio value
-      Serial.println("program 3");  // week 3 exersize 3 step 1
-      // Step 1: Create a program that drives your car to the distance set by 
-      // potentiometer (value x) and after reaching that value, rotates 90 degrees right 
-      // (using only one wheel) and then drives the same distance again
-      
-      remoteControl = false;
-      checkRemote();
-
-      // program 3 exe
-      executeMovementSequence(joystickPotentio());
-      program = 4;
-      break;
-
-    case 4:// follow program
-      Serial.println("program 4");  // week 3 exersize 2 step 1
-      // follow program
-      // Create a program that drives your car to a set distance from object/wall
-      maintainDistance(20);
-      break;
-
-    case 5:// Instead of fixed 20 cm distance, the value is read from potentiometer
-      Serial.println("program 5");  // week 3 exersize 2 step 2
-      // program 5 exe
-      // Instead of fixed 20 cm distance, the value is read from potentiometer
-      stay_put();
-      maintainDistance(joystickPotentio());
-      break;
-
-    case 6:// calculate M² 
-      Serial.println("program 6");  // week 4 exersize 1 step 1
-      // program 6 exe
-      stay_put();
-      executeSquareMeter();
-      delay(2000);
-      program = 7;
-      break;
-    case 7:// drive square
-      Serial.println("program 7"); // week 5 exersize 2
-      driveSquare();
-
-      // to do 
-      // count encoderpulses to messure total distance driven !!!
-      program = 8;
-      break;
-
-    case 8://
-      // week 7 2-way communication
-      //Serial.println("programm 8");
-      remoteControl = true;
-     // checkRemote();
-      stay_put();
-      writeSerialData();
-      parseSerialData(); // to get ip
-     // Serial.println(IPAddress);
-
-      delay(1000);
-      break;
-
-
-      case 9://
-      // week 4 exercise 3- Encoder Calibration - BETA
-      lcddisp();
-      calibrateEncoders();
-      delay(10000);
-      break;
-
-      case 10:
-       //Serial.println("program 10");  // week 10 midpoint
-      
-      remoteControl = true;
-     // checkRemote();
-      stay_put();
-      parseSerialData();
-      break;
-
-      
-     default:// Reset program to 0
-      // Default case, executed when program is neither 0, 1, nor 2
-      program = init_program;  // Reset program to init program
-      break;
-  }
+  programSwitcher();
 
   /*
     * pwm_L = (Ypot);

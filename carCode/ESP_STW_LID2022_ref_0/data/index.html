@@ -138,13 +138,22 @@
         compassCircle.style.transform = `rotate(${angle}deg)`;
       }
 
+      function checkDistance(distance) {
+        if (distance < 15) {
+          alert("Warning: Object is too close!");
+        }
+        document.getElementById("Box_lidar_dist").innerHTML = distance;
+        console.log("Distance: " + distance);
+      }
+
       function simulateSensorUpdates() {
         // Simulating sensor value updates - replace this with actual data fetching
-        var distanceLeft = Math.floor(Math.random() * totalDistance);
+        var distanceLeft = 4;//Math.floor(Math.random() * totalDistance);
         var angle = Math.floor(Math.random() * 360);
 
         updateProgressBar(distanceLeft);
         updateCompass(angle);
+        checkDistance(distanceLeft);
       }
 
       //setInterval(simulateSensorUpdates, 2000);
@@ -165,23 +174,28 @@
 
         xhttp.onreadystatechange = function () {
           if (this.readyState == 4 && this.status == 200) {
-            var response = JSON.parse(this.responseText); // Parse the JSON response
+            try{
+              console.log(this.responseText);
+              var response = JSON.parse(this.responseText); // Parse the JSON response
 
-            var distance = response.dist; // Get the "dist" value
-            var direction = response.dire; // Get the "dire" value
+              var distance = response.dist; // Get the "dist" value
+              var direction = response.dire; // Get the "dire" value
+            } catch (e) {
+              console.log("Error: " + e);
+            }
 
             console.log("Distance: " + distance);
             console.log("Direction: " + direction);
 
-            document.getElementById("Box_lidar_dist").innerHTML = distance;
             updateCompass(direction);
             updateProgressBar(distance);
+            checkDistance(distance);
           }
         };
 
         xhttp.open("GET", "/from_MEGA", true); // request string from server
         xhttp.send("GET", "/from_MEGA", true);
-      }, 500); // Interval time 0.5 Sec
+      }, 1000); // Interval time 1 Sec
 
       function httpGetAsync(callback) {
         // HTTP GET to send stw or drive values to C++
