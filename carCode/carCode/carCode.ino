@@ -17,9 +17,6 @@ String IPAddress;
 #define CMPS14_address 0x60  // compass
 
 // color sensor
-#define redpin 3
-#define greenpin 5
-#define bluepin 6
 #define commonAnode true
 byte gammatable[256];
 DFRobot_TCS34725 tcs = DFRobot_TCS34725(&Wire, TCS34725_ADDRESS,TCS34725_INTEGRATIONTIME_50MS,TCS34725_GAIN_4X);

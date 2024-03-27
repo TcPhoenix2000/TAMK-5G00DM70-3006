@@ -115,15 +115,14 @@ void programSwitcher() {
       //Serial.println("program 11");  // week 10 midpoint
       uint16_t clear, red, green, blue;
       tcs.getRGBC(&red, &green, &blue, &clear);
+      
       tcs.lock();  // turn off LED
-      Serial.print("C:\t");
-      Serial.print(clear);
-      Serial.print("\tR:\t");
-      Serial.print(red);
-      Serial.print("\tG:\t");
-      Serial.print(green);
-      Serial.print("\tB:\t");
-      Serial.print(blue);
+      Serial.print("\tR:");
+      Serial.print(red %255);
+      Serial.print("\tG:");
+      Serial.print(green %255);
+      Serial.print("\tB:");
+      Serial.print(blue %255);
       Serial.println("\t");
 
       // Figure out some basic hex code for visualization
@@ -144,13 +143,6 @@ void programSwitcher() {
       Serial.print((int)b, HEX);
       Serial.println();
 
-      //Serial.print((int)r ); Serial.print(" "); Serial.print((int)g);S
-      Serial.print(" ");
-      Serial.println((int)b);
-      //Set the color lamp
-      analogWrite(redpin, gammatable[(int)r]);
-      analogWrite(greenpin, gammatable[(int)g]);
-      analogWrite(bluepin, gammatable[(int)b]);
       break;
 
     default:  // Reset program to 0
