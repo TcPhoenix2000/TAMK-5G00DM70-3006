@@ -20,23 +20,27 @@ functions:
 
     move_forward(distance):
         // function to move the car forward by a given distance
-        // implement logic to move the car and update encoder_distance
 
     rotate(angle):
         // function to rotate the car by a given angle
-        // implement logic to rotate the car and update direction
 
     stop_car():
         // function to stop the car immediately
-        // implement logic to stop the car
 
     move_slow():
         // function to move the car at slow speed
-        // implement logic to adjust car speed
 
     move_fast():
         // function to move the car at fast speed
-        // implement logic to adjust car speed
+
+    rotated_360_degrees():
+        // function to check if the car has rotated 360 degrees
+        turnsTaken++; //counts up global int
+        if(turnsTaken < 6) {
+           return true;
+        }
+        return false;
+      }
 
 main program:
     loop:
