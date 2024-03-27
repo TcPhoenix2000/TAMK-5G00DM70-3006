@@ -43,6 +43,30 @@ void moveDist(int moveValue, int initDist) {
   }
 }
 
+
+  blue// 203 282 343
+  red//253 303 352
+  green// 218 343 319
+
+void moveDistColor(int moveValue, int initDist) {
+  SetSpeed(100);
+  if (moveValue > 0) {
+    if(
+    
+    Serial.println("move forward");
+    while (initDist < getDistance()) {
+      go_forward();
+    }
+
+  } else if (moveValue < 0) {
+    Serial.println("move backwards");
+    while (initDist > getDistance()) {
+      go_backwards();
+    }
+  }
+}
+
+
 void moveDistSpeed(int moveValue, int initDist) {
   SetSpeed(100);
   if (moveValue > 0) {

@@ -87,6 +87,3 @@ void TurnAngle(int turnValue, int tolerance) {
     //stay_put();
   }
 }
-
-
-
